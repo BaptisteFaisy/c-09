@@ -6,7 +6,7 @@
 /*   By: bfaisy <bfaisy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/15 23:26:41 by bfaisy            #+#    #+#             */
-/*   Updated: 2024/01/16 03:40:35 by bfaisy           ###   ########.fr       */
+/*   Updated: 2024/01/22 13:03:15 by bfaisy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,15 @@
 #include <fstream>
 #include <string>
 #include <cstdlib>
-int utils(std::string ligne);
+#include <cmath>
+
+
+float utils(std::string ligne);
 float chartofloat(std::string str);
+int find(std::string str);
+
 
 #include "BitcoinExchange.hpp"
-// to do je n'ai pas check le fichier data.csv en terme d'input
 int main(int ac, char **av)
 {
 	std::string ligne;
@@ -35,9 +39,9 @@ int main(int ac, char **av)
 		if (i != 0)
 		{
 			try
-			{ // maybe patch pour les mois ect si jamais j'ai le temps
-				if ((std::stoi(ligne.substr(0, 4)) > 2024 || std::stoi(ligne.substr(0, 4)) < 2009) || (std::stoi(ligne.substr(5, 7)) > 12 || std::stoi(ligne.substr(5, 7)) < 0)
-					|| (std::stoi(ligne.substr(8,10)) > 31 || std::stoi(ligne.substr(8,10)) < 0) || ligne[11] != '|')
+			{ // maybe patch pour les mois ect si jamais j'ai le temps bisextille
+				if ((std::stoi(ligne.substr(0, 4)) > 2024 || std::stoi(ligne.substr(0, 4)) < 2009) || (std::stoi(ligne.substr(5, 2)) > 12 || std::stoi(ligne.substr(5, 2)) < 0)
+					|| (std::stoi(ligne.substr(8,2)) > 31 || std::stoi(ligne.substr(8,2)) < 0) || ligne[11] != '|')
 				{
 					std::cout << "Error : input not valid\n";
 					return (1);
@@ -54,11 +58,11 @@ int main(int ac, char **av)
 		}
 		else if (ligne == "date | value")
 			i++;
-		find(ligne)
+		find(ligne);
 	}
 }
 
-int utils(std::string ligne)
+float utils(std::string ligne)
 {
 	int j = 13;
 	std::string nbr;
@@ -69,11 +73,11 @@ int utils(std::string ligne)
 	}
 	try
 	{
-		if (std::stoi(nbr) < 0 || std::stoi(nbr) > 1000)
+		if (std::stof(nbr) < 0 || std::stof(nbr) > 1000)
 		{
 			std::cout << "Error : number\n";
 			return (-1);
-		}float chartofloat(std::string str)
+		}
 
 	}
 	catch (const std::invalid_argument& e) {
@@ -82,7 +86,7 @@ int utils(std::string ligne)
 	} catch (const std::out_of_range& e) {
 		std::cerr << "Error: Out of range"<< std::endl;
 		return (-1);}
-	return (std::stoi(nbr));
+	return (std::stof(nbr));
 }
 
 int find(std::string str)
@@ -94,48 +98,83 @@ int find(std::string str)
 		return (std::cout << "Error : open failed\n", -1);
 	while (std::getline(fichier, ligne))
 	{
-		if ((std::stoi(ligne.substr(0, 4)) > 2024 || std::stoi(ligne.substr(0, 4)) < 2009) || (std::stoi(ligne.substr(5, 7)) > 12 || std::stoi(ligne.substr(5, 7)) < 0)
-					|| (std::stoi(ligne.substr(8,10)) > 31 || std::stoi(ligne.substr(8,10)) < 0))
+		if (ligne == "date,exchange_rate" || (std::stoi(ligne.substr(0, 4)) > 2024 || std::stoi(ligne.substr(0, 4)) < 2009) || (std::stoi(ligne.substr(5, 2)) > 12 || std::stoi(ligne.substr(5, 2)) < 0)
+					|| (std::stoi(ligne.substr(8,2)) > 31 || std::stoi(ligne.substr(8,2)) < 0))
+			continue ;
+		else if (str.substr(0,4) < ligne.substr(0,4))
 		{
-			if (str.substr(0,4) < ligne.substr(0,4))
+			std::cout << ligneavant.substr(0,10) << "=>" << utils(str) << '=' << utils(str) * chartofloat(ligneavant) << std::endl;
+			return (0) ;
+		}
+		if (str.substr(0,4) == ligne.substr(0,4))
+		{
+			if (str.substr(5,2) < ligne.substr(5,2))
 			{
-				std::cout << ligneavant.substr(0,10) << "=>" << utils(str) << '=' << utils(str) * chartofloat(ligneavant) << std::endl;
+				std::cout << ligneavant.substr(0,10) << "=>" << utils(str) << '=' << utils(str) * chartofloat(ligneavant) <<"a"<< std::endl;
+				return (0) ;
 			}
-			if (str.substr(0,4) == ligne.substr(0,4))
+			if (str.substr(5,2) == ligne.substr(5,2))
 			{
-				if (str.substr(5,7) < ligne.substr(5,7))
-					std::cout << ligneavant.substr(0,10) << "=>" << utils(str) << '=' << utils(str) * chartofloat(ligneavant) << std::endl;
-				if (str.substr(5,7) == ligne.substr(5,7))
+				if (str.substr(8,2) < ligne.substr(8,2))
 				{
-					if (str.substr(5,7) < ligne.substr(5,7))
+					std::cout << ligneavant.substr(0,10) << "=>" << utils(str) << '=' << utils(str) * chartofloat(ligneavant) << std::endl;
+					return (0) ;
+				}
+				if (str.substr(8,10) == ligne.substr(8,2))
+				{
+					std::cout << ligne.substr(0,10) << "=>" << utils(str) << '=' << utils(str) * chartofloat(ligne) << "q"<<std::endl;
+					return (0) ;
 				}
 			}
-			ligneavant = ligne;
+		ligneavant = ligne;
 		}
 	}
+	return (0);
 }
 
 float chartofloat(std::string str)
 {
-	int j = 10;
+	int j = 11;
 	float nbr = 0;
 	int cond = 0;
+	bool cond2 = false;
+	float nbr2 = 0;
+	int i = 1;
+	// std::cout << str[j];
 	while (str[j])
 	{
-		if (std::isdigit(str[j]))
+		if (std::isdigit(str[j]) && cond2 == false)
 		{
-			nbr += str[j];
+			nbr *= 10;
+			nbr += (str[j] -'0');
 			cond = 1;
 			j++;
 		}
-		else if (str[j] == '.')
+		else if (std::isdigit(str[j]) && cond2 == true)
+		{
+			nbr2 += (str[j] - '0') * (std::pow(0.1, i));
+			cond2 = true;
+			i++;
 			j++;
+		}
+		else if (str[j] == '.')
+		{
+			j++;
+			cond2 = true;
+		}
 		else
 		{
 			if (cond == 1)
-				return (nbr);
+			{
+				if (cond2 == true)
+					nbr += nbr2;
+			return (nbr);}
 			else
 				return (-1);
 		}
 	}
+	if (cond2 == true)
+		nbr += nbr2;
+	// std::cout << "a" << nbr<< "a";
+	return (nbr);
 }
