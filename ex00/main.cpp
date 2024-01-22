@@ -6,18 +6,16 @@
 /*   By: bfaisy <bfaisy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/15 23:26:41 by bfaisy            #+#    #+#             */
-/*   Updated: 2024/01/22 13:03:15 by bfaisy           ###   ########.fr       */
+/*   Updated: 2024/01/22 13:49:57 by bfaisy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-
-// 2001-42-42
 
 #include <fstream>
 #include <string>
 #include <cstdlib>
 #include <cmath>
-
+#include <vector>
 
 float utils(std::string ligne);
 float chartofloat(std::string str);
@@ -48,13 +46,13 @@ int main(int ac, char **av)
 				}
 			}
 			catch (const std::invalid_argument& e) {
-            	std::cerr << "Error: Invalid date" << e.what() << std::endl;
-            	return 1;
+            	std::cerr << "Error: Invalid date" << std::endl;
+            	continue ;
         	} catch (const std::out_of_range& e) {
             	std::cerr << "Error: Out of range : " << e.what() << std::endl;
-            	return 1;}
+            	continue;}
 			if (utils(ligne) == -1)
-				return (1);
+				continue ;
 		}
 		else if (ligne == "date | value")
 			i++;
@@ -103,26 +101,26 @@ int find(std::string str)
 			continue ;
 		else if (str.substr(0,4) < ligne.substr(0,4))
 		{
-			std::cout << ligneavant.substr(0,10) << "=>" << utils(str) << '=' << utils(str) * chartofloat(ligneavant) << std::endl;
+			std::cout << str.substr(0,10) << "=>" << utils(str) << '=' << utils(str) * chartofloat(ligneavant) << std::endl;
 			return (0) ;
 		}
 		if (str.substr(0,4) == ligne.substr(0,4))
 		{
 			if (str.substr(5,2) < ligne.substr(5,2))
 			{
-				std::cout << ligneavant.substr(0,10) << "=>" << utils(str) << '=' << utils(str) * chartofloat(ligneavant) <<"a"<< std::endl;
+				std::cout << str.substr(0,10) << "=>" << utils(str) << '=' << utils(str) * chartofloat(ligneavant) << std::endl;
 				return (0) ;
 			}
 			if (str.substr(5,2) == ligne.substr(5,2))
 			{
 				if (str.substr(8,2) < ligne.substr(8,2))
 				{
-					std::cout << ligneavant.substr(0,10) << "=>" << utils(str) << '=' << utils(str) * chartofloat(ligneavant) << std::endl;
+					std::cout << str.substr(0,10) << "=>" << utils(str) << '=' << utils(str) * chartofloat(ligneavant) << std::endl;
 					return (0) ;
 				}
 				if (str.substr(8,10) == ligne.substr(8,2))
 				{
-					std::cout << ligne.substr(0,10) << "=>" << utils(str) << '=' << utils(str) * chartofloat(ligne) << "q"<<std::endl;
+					std::cout << str.substr(0,10) << "=>" << utils(str) << '=' << utils(str) * chartofloat(ligne) <<std::endl;
 					return (0) ;
 				}
 			}
@@ -135,24 +133,23 @@ int find(std::string str)
 float chartofloat(std::string str)
 {
 	int j = 11;
-	float nbr = 0;
+	std::vector<float> Vector = {0,0};
 	int cond = 0;
 	bool cond2 = false;
-	float nbr2 = 0;
 	int i = 1;
 	// std::cout << str[j];
 	while (str[j])
 	{
 		if (std::isdigit(str[j]) && cond2 == false)
 		{
-			nbr *= 10;
-			nbr += (str[j] -'0');
+			Vector[0] *= 10;
+			Vector[0] += (str[j] -'0');
 			cond = 1;
 			j++;
 		}
 		else if (std::isdigit(str[j]) && cond2 == true)
 		{
-			nbr2 += (str[j] - '0') * (std::pow(0.1, i));
+			Vector[1] += (str[j] - '0') * (std::pow(0.1, i));
 			cond2 = true;
 			i++;
 			j++;
@@ -167,14 +164,14 @@ float chartofloat(std::string str)
 			if (cond == 1)
 			{
 				if (cond2 == true)
-					nbr += nbr2;
-			return (nbr);}
+					Vector[0] += Vector[1];
+			return (Vector[0]);}
 			else
 				return (-1);
 		}
 	}
 	if (cond2 == true)
-		nbr += nbr2;
+		Vector[0] += Vector[1];
 	// std::cout << "a" << nbr<< "a";
-	return (nbr);
+	return (Vector[0]);
 }
