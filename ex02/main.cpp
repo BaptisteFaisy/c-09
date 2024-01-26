@@ -6,7 +6,7 @@
 /*   By: bfaisy <bfaisy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/23 16:16:57 by bfaisy            #+#    #+#             */
-/*   Updated: 2024/01/26 16:44:53 by bfaisy           ###   ########.fr       */
+/*   Updated: 2024/01/26 19:55:36 by bfaisy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -205,7 +205,10 @@ static void container2(int ac, char **av)
 {
 	int i = 1;
 	int j = 1;
+	int ij = 0;
+	bool cond2 =false;
 	bool cond = false;
+	int nbr = 0;
 	std::cout << "Before : ";
 	while (i != ac)
 	{
@@ -214,6 +217,7 @@ static void container2(int ac, char **av)
 	}
 	i = 0;
 	std::cout << std::endl;
+	auto start_time2 = std::chrono::high_resolution_clock::now();
 	std::list<int> list;
 	while ( i != ac -1)
 	{
@@ -222,31 +226,46 @@ static void container2(int ac, char **av)
 		i++;
 	}
 	std::list<int> finallist;
-	std::list<int>::iterator in = finallist.begin();
-	std::list<int>::iterator ip = finallist.begin();
+	std::list<int>::iterator in = list.begin();
+	std::list<int>::iterator ip = list.begin();
+	std::list<int>::iterator it = finallist.begin();
 	i = 0;
-	j = 1;
+	j = 0;
 	while (i != (ac -1) / 2)
 	{
 		cond = false;
+		ij = 0;
 		if (j + 1 <= list.size())
 		{
-			std::advance(in, j);
-			std::advance(ip, j - 1);
+			if (cond2 == false)
+			{
+				in++;
+				cond2 = true;
+			}
+			else
+			{
+				in++;
+				in++;
+			}
+			ip = in;
+			ip--;
 			if (*in >= *ip)
 			{
-				if (list.empty())
+				if (finallist.empty())
 					finallist.push_back(*in);
 				else
 				{
-					ip = list.begin();
-					while (*ip != list.back())
+					it = finallist.begin();
+					while (ij < finallist.size())
 					{
-						cond = true;
-						if (*in <= *ip)
-							finallist.insert(ip, *in);
-						ip++;
-						ip++;
+						if (*in <= *it)
+						{
+							finallist.insert(it, *in);
+							cond = true;
+							break ;
+						}
+						it++;
+						ij++;
 					}
 					if (cond == false)
 						finallist.push_back(*in);
@@ -254,18 +273,21 @@ static void container2(int ac, char **av)
 			}
 			else
 			{
-				if (list.empty())
+				if (finallist.empty())
 					finallist.push_back(*ip);
 				else
 				{
-					in = list.begin();
-					while (*in != list.back())
+					it = finallist.begin();
+					while (ij < finallist.size())
 					{
-						cond = true;
-						if (*ip <= *in)
-							finallist.insert(in, *ip);
-						in++;
-						in++;
+						if (*ip <= *it)
+						{
+							finallist.insert(it, *ip);
+							cond = true;
+							break ;
+						}
+						ij++;
+						++it;
 					}
 					if (cond == false)
 						finallist.push_back(*ip);
@@ -275,5 +297,96 @@ static void container2(int ac, char **av)
 		i++;
 		j+= 2;
 	}
-    std::cout << finallist.size() << std::endl;
+	i = 0;
+	j = 0;
+	in = list.begin();
+	ip = list.begin();
+	cond2 = false;
+	// for (std::list<int>::iterator it = finallist.begin(); it != finallist.end(); it++) {
+    //     std::cout << *it << " ";
+    // }
+	while (i != (ac -1) / 2)
+	{
+		cond = false;
+		ij = 0;
+		if (j + 1 <= list.size())
+		{
+			if (cond2 == false)
+			{
+				std::advance(in, 1);
+				cond2 = true;
+			}
+			else
+				std::advance(in, 2);
+			ip = in;
+			ip--;
+			// std::cout << *in << std::endl;
+			if (*in <= *ip)
+			{
+				it = finallist.begin();
+				while (ij < finallist.size())
+				{
+					if (*in <= *it)
+					{
+						finallist.insert(it, *in);
+						cond = true;
+						// std::cout << *in;
+						break ;
+					}
+					ij++;
+					it++;
+				}
+				if (cond == false)
+					finallist.push_back(*in);
+			}
+			else
+			{
+				it = finallist.begin();
+				while (ij < finallist.size())
+				{
+					if (*ip <= *it)
+					{
+						finallist.insert(it, *ip);
+						cond = true;
+						// std::cout << *ip;
+						break ;
+					}
+					ij++;
+					++it;
+				}
+				if (cond == false)
+					finallist.push_back(*ip);
+			}
+		}
+		j+=2;
+		i++;
+	}
+	cond = false;
+	nbr = list.back();
+	if ((ac  - 1 ) % 2 == 1)
+	{
+		it = finallist.begin();
+		while (ij < finallist.size())
+		{
+			if (nbr <= *it)
+			{
+				finallist.insert(it, nbr);
+				cond = true;
+				// std::cout << *ip;
+				break ;
+			}
+			ij++;
+			++it;
+		}
+		if (cond == false)
+			finallist.push_back(nbr);
+	}
+	auto end_time2 = std::chrono::high_resolution_clock::now();
+	std::cout << "After : ";
+	for (std::list<int>::iterator it = finallist.begin(); it != finallist.end(); it++) {
+        std::cout << *it << " ";
+    }
+	std::cout << std::endl;
+	auto duration2 = std::chrono::duration_cast<std::chrono::microseconds>(end_time2 - start_time2);
+    std::cout << "Time to process a range of " << ac - 1 << " elements with std::vector :" << duration2.count() << " us " << std::endl;
 }
