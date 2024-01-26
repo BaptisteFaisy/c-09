@@ -6,7 +6,7 @@
 /*   By: bfaisy <bfaisy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/15 23:26:41 by bfaisy            #+#    #+#             */
-/*   Updated: 2024/01/22 13:49:57 by bfaisy           ###   ########.fr       */
+/*   Updated: 2024/01/23 18:18:04 by bfaisy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include <string>
 #include <cstdlib>
 #include <cmath>
-#include <vector>
+#include <array>
 
 float utils(std::string ligne);
 float chartofloat(std::string str);
@@ -133,7 +133,7 @@ int find(std::string str)
 float chartofloat(std::string str)
 {
 	int j = 11;
-	std::vector<float> Vector = {0,0};
+	std::array<float, 2> array = {0,0};
 	int cond = 0;
 	bool cond2 = false;
 	int i = 1;
@@ -142,14 +142,14 @@ float chartofloat(std::string str)
 	{
 		if (std::isdigit(str[j]) && cond2 == false)
 		{
-			Vector[0] *= 10;
-			Vector[0] += (str[j] -'0');
+			array[0] *= 10;
+			array[0] += (str[j] -'0');
 			cond = 1;
 			j++;
 		}
 		else if (std::isdigit(str[j]) && cond2 == true)
 		{
-			Vector[1] += (str[j] - '0') * (std::pow(0.1, i));
+			array[1] += (str[j] - '0') * (std::pow(0.1, i));
 			cond2 = true;
 			i++;
 			j++;
@@ -164,14 +164,14 @@ float chartofloat(std::string str)
 			if (cond == 1)
 			{
 				if (cond2 == true)
-					Vector[0] += Vector[1];
-			return (Vector[0]);}
+					array[0] += array[1];
+			return (array[0]);}
 			else
 				return (-1);
 		}
 	}
 	if (cond2 == true)
-		Vector[0] += Vector[1];
+		array[0] += array[1];
 	// std::cout << "a" << nbr<< "a";
-	return (Vector[0]);
+	return (array[0]);
 }
