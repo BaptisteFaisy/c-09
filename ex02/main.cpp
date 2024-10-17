@@ -6,14 +6,14 @@
 /*   By: bfaisy <bfaisy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/23 16:16:57 by bfaisy            #+#    #+#             */
-/*   Updated: 2024/01/26 19:55:36 by bfaisy           ###   ########.fr       */
+/*   Updated: 2024/10/17 11:52:26 by bfaisy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "PmergeMe.hpp"
 #include <vector>
-#include <chrono>
 #include <list>
+#include <cstdlib>
 
 
 static bool estUneChaineDeChiffres(const std::string& chaine);
@@ -43,15 +43,16 @@ int main(int ac, char **av)
 	}
 	std::cout << std::endl;
 	i = 1;
-	auto start_time = std::chrono::high_resolution_clock::now();
+	clock_t start_time = clock();
 	if (estUneChaineDeChiffres(av[1]))
 	{
-		std::vector<std::vector<int>> vector(ac - 1, std::vector<int>(2, 0));
+		std::vector<std::vector<int> > vector(ac - 1, std::vector<int>(2, 0));
 		while (j != ((ac - 1)  / 2))
 		{
-			vector[j][0] = std::stoi(av[i]);
+			vector[j][0] = std::atoi(av[i]);
 			i++;
-			vector[j][1] = std::stoi(av[i]);
+			vector[j][1] = std::atoi(av[i]);
+
 			i++;
 			j++;
 		}
@@ -150,7 +151,7 @@ int main(int ac, char **av)
 			if (estUneChaineDeChiffres(av[ac -1]))
 			{
 				it = listfinal.begin();
-				nbr = std::stoi(av[ac - 1]);
+				nbr = std::atoi(av[ac - 1]);
 				while (listfinal[i])
 				{
 					if (listfinal[i] >= nbr)
@@ -163,7 +164,7 @@ int main(int ac, char **av)
 				}
 			}
 		}
-		auto end_time = std::chrono::high_resolution_clock::now();
+    	clock_t end_time = clock();
 		i = 0;
 		std::cout << "After : ";
 		while (i != ac - 1)
@@ -172,8 +173,9 @@ int main(int ac, char **av)
 			i++;
 		}
 		std::cout << std::endl;
-		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time);
-    	std::cout << "Time to process a range of " << ac - 1 << " elements with std::vector :" << duration.count() << " us " << std::endl;
+    	double duration = static_cast<double>(end_time - start_time) * 1000 / CLOCKS_PER_SEC;
+		std::cout << "Time to process a range of " << (ac - 1) << " elements with std::vector: " 
+              << duration << " us " << std::endl;
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// list
 		container2(ac, av);
@@ -181,8 +183,8 @@ int main(int ac, char **av)
 }
 
 static bool estUneChaineDeChiffres(const std::string& chaine) {
-    for (char caractere : chaine) {
-        if (!std::isdigit(caractere)) {
+     for (std::string::size_type i = 0; i < chaine.size(); ++i) {
+        if (!std::isdigit(chaine[i])) {
             return false;
         }
     }
@@ -217,11 +219,11 @@ static void container2(int ac, char **av)
 	}
 	i = 0;
 	std::cout << std::endl;
-	auto start_time2 = std::chrono::high_resolution_clock::now();
+	clock_t start_time2 = clock();
 	std::list<int> list;
 	while ( i != ac -1)
 	{
-		list.push_back(std::stoi(av[j]));
+		list.push_back(std::atoi(av[j]));
 		j++;
 		i++;
 	}
@@ -235,7 +237,7 @@ static void container2(int ac, char **av)
 	{
 		cond = false;
 		ij = 0;
-		if (j + 1 <= list.size())
+		if (static_cast<unsigned long>(j + 1) <= list.size())
 		{
 			if (cond2 == false)
 			{
@@ -256,7 +258,7 @@ static void container2(int ac, char **av)
 				else
 				{
 					it = finallist.begin();
-					while (ij < finallist.size())
+					while (static_cast<unsigned long>(ij) < finallist.size())
 					{
 						if (*in <= *it)
 						{
@@ -278,7 +280,7 @@ static void container2(int ac, char **av)
 				else
 				{
 					it = finallist.begin();
-					while (ij < finallist.size())
+					while (static_cast<unsigned long>(ij) < finallist.size())
 					{
 						if (*ip <= *it)
 						{
@@ -309,7 +311,7 @@ static void container2(int ac, char **av)
 	{
 		cond = false;
 		ij = 0;
-		if (j + 1 <= list.size())
+		if (static_cast<unsigned long>(j + 1) <= list.size())
 		{
 			if (cond2 == false)
 			{
@@ -324,7 +326,7 @@ static void container2(int ac, char **av)
 			if (*in <= *ip)
 			{
 				it = finallist.begin();
-				while (ij < finallist.size())
+				while (static_cast<unsigned long>(ij) < finallist.size())
 				{
 					if (*in <= *it)
 					{
@@ -342,7 +344,7 @@ static void container2(int ac, char **av)
 			else
 			{
 				it = finallist.begin();
-				while (ij < finallist.size())
+				while (static_cast<unsigned long>(ij) < finallist.size())
 				{
 					if (*ip <= *it)
 					{
@@ -366,7 +368,7 @@ static void container2(int ac, char **av)
 	if ((ac  - 1 ) % 2 == 1)
 	{
 		it = finallist.begin();
-		while (ij < finallist.size())
+		while (static_cast<unsigned long>(ij) < finallist.size())
 		{
 			if (nbr <= *it)
 			{
@@ -381,12 +383,12 @@ static void container2(int ac, char **av)
 		if (cond == false)
 			finallist.push_back(nbr);
 	}
-	auto end_time2 = std::chrono::high_resolution_clock::now();
-	std::cout << "After : ";
+	clock_t end_time2 = clock();	std::cout << "After : ";
 	for (std::list<int>::iterator it = finallist.begin(); it != finallist.end(); it++) {
         std::cout << *it << " ";
     }
 	std::cout << std::endl;
-	auto duration2 = std::chrono::duration_cast<std::chrono::microseconds>(end_time2 - start_time2);
-    std::cout << "Time to process a range of " << ac - 1 << " elements with std::vector :" << duration2.count() << " us " << std::endl;
-}
+	double duration2 = static_cast<double>(end_time2 - start_time2) * 1000 / CLOCKS_PER_SEC;
+    std::cout << "Time to process a range of " << (ac - 1) << " elements with std::list: " 
+              << duration2  << " us " << std::endl;}
+
