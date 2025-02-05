@@ -34,7 +34,7 @@ int main(int ac, char **av)
 	int nbr = 0;
 	bool cond = false;
 	if (estUneChaineDeChiffres2(ac,av) == false)
-		return (1);
+		return (std::cout << "Error\n", 1);
 	std::cout << "Before : ";
 	while (i != ac)
 	{

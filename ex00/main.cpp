@@ -68,7 +68,15 @@ float utils(std::string ligne) {
 
     double nbrd = std::strtod(nbr.c_str(), &end);
 
-    if (nbrd < 0 || nbrd > 1000 || *end != '\0' || errno == ERANGE) {
+    if (nbrd < 0 ){
+		std::cout << "Error: negative number or no number\n";
+		return -1.0f;}
+
+	else if (nbrd > 2147483647){
+	    std::cout << "Error: too big number\n";
+		return -1.0f;}
+
+	else if (*end != '\0' || errno == ERANGE) {
         std::cout << "Error: invalid number\n";
         return -1.0f;
     }
